@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Student Sessions",
-    "slug": "student-sessions",
+    "slug": "read4more-calendar",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -27,6 +27,12 @@
     "plugins": [
       "expo-splash-screen",
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "eb5c7d94-d897-44d9-90e9-cb9668b5e0b1"
+      }
+    },
+    "owner": "read4more"
   }
 }
