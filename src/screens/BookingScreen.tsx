@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {
-  Alert,
   FlatList,
   StyleSheet,
   Text,
@@ -17,6 +16,7 @@ import { BookingError, bookSlot } from "../data/bookings";
 import { Slot } from "../types";
 import { colors, radius, spacing, typography } from "../theme/theme";
 import { formatDateLong, formatTime, todayISODate } from "../utils/datetime";
+import { confirmAction, showAlert } from "../utils/alert";
 
 export default function BookingScreen() {
   const { user, profile } = useAuth();
@@ -54,37 +54,32 @@ export default function BookingScreen() {
   async function handleBook(slot: Slot) {
     if (!user) return;
     if ((profile?.balance ?? 0) < 1) {
-      Alert.alert(
+      showAlert(
         "Insufficient balance",
         "You don't have any sessions left. Contact your instructor to top up your balance."
       );
       return;
     }
 
-    Alert.alert(
+    confirmAction(
       "Confirm booking",
       `Book the ${formatTime(slot.startTime)} session on ${formatDateLong(slot.date)}? This will use 1 session from your balance.`,
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Book",
-          onPress: async () => {
-            setBookingSlotId(slot.id);
-            try {
-              await bookSlot(user.uid, slot.id);
-              Alert.alert("Session booked!", "Your session has been confirmed.");
-            } catch (err) {
-              const message =
-                err instanceof BookingError
-                  ? err.message
-                  : "Something went wrong booking this session. Please try again.";
-              Alert.alert("Booking failed", message);
-            } finally {
-              setBookingSlotId(null);
-            }
-          },
-        },
-      ]
+      "Book",
+      async () => {
+        setBookingSlotId(slot.id);
+        try {
+          await bookSlot(user.uid, slot.id);
+          showAlert("Session booked!", "Your session has been confirmed.");
+        } catch (err) {
+          const message =
+            err instanceof BookingError
+              ? err.message
+              : "Something went wrong booking this session. Please try again.";
+          showAlert("Booking failed", message);
+        } finally {
+          setBookingSlotId(null);
+        }
+      }
     );
   }
 

@@ -1,14 +1,15 @@
 import React, { useMemo, useState } from "react";
-import { Alert, SectionList, StyleSheet, Text, View } from "react-native";
+import { SectionList, StyleSheet, Text, View } from "react-native";
 import Screen from "../components/Screen";
 import Card from "../components/Card";
 import Button from "../components/Button";
 import { useAuth } from "../context/AuthContext";
 import { useStudentBookings } from "../hooks/useStudentBookings";
-import { BookingError, cancelBooking, CANCELLATION_WINDOW_HOURS } from "../data/bookings";
+import { BookingError, cancelBooking } from "../data/bookings";
 import { Booking } from "../types";
 import { colors, spacing, typography } from "../theme/theme";
 import { formatDateLong, formatTime, todayISODate } from "../utils/datetime";
+import { confirmAction, showAlert } from "../utils/alert";
 
 export default function MySessionsScreen() {
   const { user } = useAuth();
@@ -30,31 +31,25 @@ export default function MySessionsScreen() {
   }, [bookings]);
 
   async function handleCancel(booking: Booking) {
-    Alert.alert(
+    confirmAction(
       "Cancel session",
       `Cancel your ${formatTime(booking.startTime)} session on ${formatDateLong(booking.date)}? Your session credit will be refunded.`,
-      [
-        { text: "Keep session", style: "cancel" },
-        {
-          text: "Cancel session",
-          style: "destructive",
-          onPress: async () => {
-            if (!user) return;
-            setCancellingId(booking.id);
-            try {
-              await cancelBooking(booking, user.uid);
-            } catch (err) {
-              const message =
-                err instanceof BookingError
-                  ? err.message
-                  : "Something went wrong cancelling this session.";
-              Alert.alert("Cancel failed", message);
-            } finally {
-              setCancellingId(null);
-            }
-          },
-        },
-      ]
+      "Cancel session",
+      async () => {
+        if (!user) return;
+        setCancellingId(booking.id);
+        try {
+          await cancelBooking(booking, user.uid);
+        } catch (err) {
+          const message =
+            err instanceof BookingError
+              ? err.message
+              : "Something went wrong cancelling this session.";
+          showAlert("Cancel failed", message);
+        } finally {
+          setCancellingId(null);
+        }
+      }
     );
   }
 
@@ -103,10 +98,6 @@ export default function MySessionsScreen() {
           );
         }}
       />
-
-      <Text style={styles.footnote}>
-        Sessions can be cancelled up to {CANCELLATION_WINDOW_HOURS} hours before they start.
-      </Text>
     </Screen>
   );
 }
@@ -155,11 +146,5 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     textAlign: "center",
     marginTop: spacing.lg,
-  },
-  footnote: {
-    ...typography.caption,
-    color: colors.textMuted,
-    textAlign: "center",
-    paddingVertical: spacing.sm,
   },
 });
