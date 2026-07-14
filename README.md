@@ -156,5 +156,6 @@ eas.json                     EAS Build profiles
   students this is a reasonable trade-off; if you need stronger guarantees,
   move booking/cancellation into a Cloud Function that runs with elevated
   privileges instead of running the transaction on-device.
-- **Cancellation window** is a constant (`CANCELLATION_WINDOW_HOURS` in
-  `src/data/bookings.ts`, currently 24h) — adjust to taste.
+- **Cancellations are allowed at any time**, including right up until (or
+  after) a session's start time. If you want a cutoff, add a time check back
+  into `cancelBooking` in `src/data/bookings.ts`.

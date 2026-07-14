@@ -5,7 +5,7 @@ import Card from "../components/Card";
 import Button from "../components/Button";
 import { useAuth } from "../context/AuthContext";
 import { useStudentBookings } from "../hooks/useStudentBookings";
-import { BookingError, cancelBooking, CANCELLATION_WINDOW_HOURS } from "../data/bookings";
+import { BookingError, cancelBooking } from "../data/bookings";
 import { Booking } from "../types";
 import { colors, spacing, typography } from "../theme/theme";
 import { formatDateLong, formatTime, todayISODate } from "../utils/datetime";
@@ -103,10 +103,6 @@ export default function MySessionsScreen() {
           );
         }}
       />
-
-      <Text style={styles.footnote}>
-        Sessions can be cancelled up to {CANCELLATION_WINDOW_HOURS} hours before they start.
-      </Text>
     </Screen>
   );
 }
@@ -155,11 +151,5 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     textAlign: "center",
     marginTop: spacing.lg,
-  },
-  footnote: {
-    ...typography.caption,
-    color: colors.textMuted,
-    textAlign: "center",
-    paddingVertical: spacing.sm,
   },
 });

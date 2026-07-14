@@ -13,8 +13,6 @@ import { Booking } from "../types";
 
 const bookingsCollection = collection(db, "bookings");
 
-export const CANCELLATION_WINDOW_HOURS = 24;
-
 export function subscribeToStudentBookings(
   uid: string,
   onChange: (bookings: Booking[]) => void,
@@ -80,22 +78,8 @@ export async function bookSlot(uid: string, slotId: string): Promise<void> {
   });
 }
 
-function isWithinCancellationWindow(date: string, startTime: string): boolean {
-  const sessionStart = new Date(`${date}T${startTime}:00`);
-  const hoursUntilStart = (sessionStart.getTime() - Date.now()) / (1000 * 60 * 60);
-  return hoursUntilStart < CANCELLATION_WINDOW_HOURS;
-}
-
-export { isWithinCancellationWindow };
-
 /** Atomically refunds the credit and frees up the slot. */
 export async function cancelBooking(booking: Booking, uid: string): Promise<void> {
-  if (isWithinCancellationWindow(booking.date, booking.startTime)) {
-    throw new BookingError(
-      `Sessions can only be cancelled at least ${CANCELLATION_WINDOW_HOURS} hours in advance.`
-    );
-  }
-
   const slotRef = doc(db, "slots", booking.slotId);
   const userRef = doc(db, "users", uid);
   const bookingRef = doc(db, "bookings", booking.id);
