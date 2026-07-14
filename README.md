@@ -26,10 +26,16 @@ publishing to both the Apple App Store and Google Play.
 3. **Firestore Database** → create a database (start in production mode).
 4. Deploy the security rules in `firestore.rules` (Firestore → Rules tab, paste
    the contents of the file, or use the Firebase CLI: `firebase deploy --only firestore:rules`).
-5. **Project settings** → General → "Your apps" → add a **Web app** (yes, even
+5. Create the composite indexes in `firestore.indexes.json` — either run
+   `firebase deploy --only firestore:indexes` (Firebase CLI), or just run the
+   app once and click the two "create index" links that show up in the logs
+   the first time the calendar/bookings queries run (Firestore requires an
+   index whenever a query both filters and sorts on multiple fields). Each
+   index takes a few minutes to finish building.
+6. **Project settings** → General → "Your apps" → add a **Web app** (yes, even
    though this is a mobile app — the Firebase JS SDK used here connects the
    same way). Copy the config values shown.
-6. Copy `.env.example` to `.env` and fill in the values from step 5:
+7. Copy `.env.example` to `.env` and fill in the values from step 6:
 
    ```
    cp .env.example .env
