@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "Student Sessions",
+    "slug": "student-sessions",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "scheme": "studentsessions",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yourcompany.studentsessions"
+    },
+    "android": {
+      "package": "com.yourcompany.studentsessions",
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-splash-screen",
+      "expo-font"
+    ]
+  }
+}
